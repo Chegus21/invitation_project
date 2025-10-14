@@ -313,11 +313,11 @@ END:VCALENDAR
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="text-center bg-black/20 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 drop-shadow-lg dancing-script-custom">
+        <div className="text-center bg-black/20 rounded-3xl p-8">
+          <h1 className="text-5xl md:text-6xl text-white mb-4 drop-shadow-lg pattaya-regular">
             Mis XV Años
           </h1>
-          <p className="text-2xl md:text-3xl dancing-script-custom text-white drop-shadow-lg">
+          <p className="text-2xl md:text-3xl montserrat-custom text-white drop-shadow-lg">
             {data.name}
           </p>
         </div>
@@ -342,7 +342,7 @@ END:VCALENDAR
           transition={{ duration: 0.8 }}
           className="relative max-w-4xl mx-auto text-center bg-black/20 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20"
         >
-          <h2 className="text-4xl onest-custom font-bold text-white/80 mb-6 tracking-wide uppercase">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white/80 mb-6 tracking-wide uppercase">
             Falta muy poco para el gran día
           </h2>
 
@@ -350,7 +350,7 @@ END:VCALENDAR
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="text-3xl font-bold bg-gradient-to-r from-rose-400 via-pink-500 to-purple-500 bg-clip-text text-transparent animate-bounce"
+              className="text-3xl font-bold bg-gradient-to-r from-rose-400 via-pink-500 to-purple-500 bg-clip-text text-transparent animate-bounce montserrat-custom"
             >
               ¡El gran día ha llegado! 🎉
             </motion.div>
@@ -649,7 +649,7 @@ END:VCALENDAR
 
                     {/* Subtítulo con transición */}
                     <motion.p
-                      className="text-sm text-gray-500 font-medium opacity-70 group-hover:opacity-100 group-hover:text-pink-500 transition-all duration-300"
+                      className="text-sm text-gray-500 montserrat-custom opacity-70 group-hover:opacity-100 group-hover:text-pink-500 transition-all duration-300"
                       initial={{ y: 5, opacity: 0 }}
                       whileInView={{ y: 0, opacity: 0.7 }}
                       transition={{ delay: index * 0.1 + 0.3 }}

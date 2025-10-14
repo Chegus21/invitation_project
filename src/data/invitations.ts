@@ -190,7 +190,7 @@ export const invitationsDatabase: Record<string, QuinceaneraData> = {
       countdownImage:
         "/media/XV_Sofia/desktop-wallpaper-blue-flower-pastel-blue-flowers.jpg",
       calendarImage:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+        "/media/XV_Sofia/Sofia -118.jpg",
       godparentsBackgroundImages:
         "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
       locationImage:
