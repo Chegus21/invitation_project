@@ -17,6 +17,9 @@ import {
   Gift,
   Store,
   DollarSign,
+  Copy,
+  Instagram,
+  Music,
 } from "lucide-react";
 
 interface InvitationTemplateProps {
@@ -56,6 +59,12 @@ interface InvitationTemplateProps {
       giftRegistryImage?: string;
       specialThanksImage?: string;
       rsvpImage?: string;
+      image1?: string;
+      text1?: string;
+      image2?: string;
+      text2?: string;
+      image3?: string;
+      text3?: string;
     };
   };
 }
@@ -165,7 +174,7 @@ const InvitationTemplate: React.FC<InvitationTemplateProps> = ({ data }) => {
   }, [data.musicLink]);
 
   // Get event icon
-  const getEventIcon = (event: string) => {
+  const getEventIcon = (event: string): React.ComponentType<any> => {
     if (event.toLowerCase().includes("ceremonia")) return Church;
     if (
       event.toLowerCase().includes("fiesta") ||
@@ -176,7 +185,7 @@ const InvitationTemplate: React.FC<InvitationTemplateProps> = ({ data }) => {
   };
 
   // 📅 Añadir al Calendario
-  const addToCalendar = () => {
+  const addToCalendar = (): void => {
     const eventDate = new Date(data.eventDate);
     const start = eventDate.toISOString().replace(/[-:]/g, "").split(".")[0];
     const endDate = new Date(eventDate.getTime() + 4 * 60 * 60 * 1000); // +4 hours
@@ -200,7 +209,7 @@ END:VCALENDAR`;
     link.click();
   };
 
-  const addToGoogleCalendar = () => {
+  const addToGoogleCalendar = (): void => {
     const eventDate = new Date(data.eventDate);
     const start = eventDate.toISOString().replace(/[-:]/g, "").split(".")[0];
     const endDate = new Date(eventDate.getTime() + 4 * 60 * 60 * 1000);
@@ -219,8 +228,8 @@ END:VCALENDAR`;
     const eventDate = new Date(data.eventDate);
     const endDate = new Date(eventDate.getTime() + 4 * 60 * 60 * 1000);
 
-    const pad = (num) => String(num).padStart(2, "0");
-    const formatDate = (d) =>
+    const pad = (num: number) => String(num).padStart(2, "0");
+    const formatDate = (d: Date) =>
       `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(
         d.getUTCDate()
       )}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(
@@ -254,7 +263,7 @@ END:VCALENDAR
     URL.revokeObjectURL(url);
   };
 
-  const addToOutlookCalendar = () => {
+  const addToOutlookCalendar = (): void => {
     const eventDate = new Date(data.eventDate);
     const endDate = new Date(eventDate.getTime() + 4 * 60 * 60 * 1000);
     const start = eventDate.toISOString();
@@ -272,7 +281,12 @@ END:VCALENDAR
   };
 
   // 📅 Generar calendario del mes
-  const generateCalendar = () => {
+  const generateCalendar = (): {
+    year: number;
+    month: number;
+    days: (number | null)[];
+    eventDay: number;
+  } => {
     const eventDate = new Date(data.eventDate);
     const year = eventDate.getFullYear();
     const month = eventDate.getMonth();
@@ -283,7 +297,7 @@ END:VCALENDAR
     const startDate = firstDay.getDay(); // 0 = Sunday
     const totalDays = lastDay.getDate();
 
-    const days = [];
+    const days: (number | null)[] = [];
     // Empty cells for days before first day
     for (let i = 0; i < startDate; i++) {
       days.push(null);
@@ -297,13 +311,13 @@ END:VCALENDAR
   };
 
   return (
-    <div className="font-sans text-gray-800 bg-gradient-to-b from-pink-50 via-rose-50 to-white min-h-screen">
+    <div className="font-sans text-gray-800 ">
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden bg"
         style={{
           backgroundImage: data.customization?.headerImage
             ? `url("${data.customization.headerImage}")`
@@ -313,20 +327,20 @@ END:VCALENDAR
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="text-center bg-black/20 rounded-3xl p-8">
-          <h1 className="text-5xl md:text-6xl text-white mb-4 drop-shadow-lg pattaya-regular">
-            Mis XV Años
-          </h1>
-          <p className="text-2xl md:text-3xl montserrat-custom text-white drop-shadow-lg">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+          <p className="text-5xl md:text-6xl text-white mb-2 drop-shadow-lg pattaya-regular">
             {data.name}
           </p>
+          <h1 className="text-2xl md:text-3xl montserrat-custom text-white drop-shadow-lg">
+            Mis XV Años
+          </h1>
         </div>
       </motion.header>
 
       {/* Countdown */}
       <section
         aria-label="Cuenta regresiva para el evento"
-        className="relative py-16 px-4 bg-gradient-to-r from-pink-100/70 to-rose-100/70"
+        className="relative py-16 px-4 bg-gradient-to-r"
         style={{
           backgroundImage: data.customization?.countdownImage
             ? `url("${data.customization.countdownImage}")`
@@ -342,7 +356,7 @@ END:VCALENDAR
           transition={{ duration: 0.8 }}
           className="relative max-w-4xl mx-auto text-center bg-black/20 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20"
         >
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white/80 mb-6 tracking-wide uppercase">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-black/80 mb-6 tracking-wide uppercase">
             Falta muy poco para el gran día
           </h2>
 
@@ -350,7 +364,7 @@ END:VCALENDAR
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="text-3xl font-bold bg-gradient-to-r from-rose-400 via-pink-500 to-purple-500 bg-clip-text text-transparent animate-bounce montserrat-custom"
+              className="text-3xl font-normal bg-gradient-to-r text-black bg-clip-text text-transparent animate-bounce montserrat-custom"
             >
               ¡El gran día ha llegado! 🎉
             </motion.div>
@@ -377,12 +391,15 @@ END:VCALENDAR
                     aria-label={`${item.label} restantes`}
                   >
                     <div className="flex items-center justify-center space-x-2 mb-2">
-                      <Icon className="w-6 h-6 text-white" aria-hidden="true" />
-                      <span className="text-4xl font-bold text-white drop-shadow">
+                      <Icon
+                        className="w-6 h-6 text-black/80"
+                        aria-hidden="true"
+                      />
+                      <span className="text-4xl font-bold text-black/80 drop-shadow">
                         <time dateTime={`${item.value}`}>{item.value}</time>
                       </span>
                     </div>
-                    <p className="text-sm text-white/80 uppercase tracking-widest font-light">
+                    <p className="text-sm text-black/80 uppercase tracking-widest font-light">
                       {item.label}
                     </p>
                   </motion.div>
@@ -391,7 +408,7 @@ END:VCALENDAR
             </div>
           )}
 
-          <p className="text-2xl md:text-3xl italianno-regular text-white drop-shadow-lg mt-8">
+          <p className="text-2xl md:text-3xl italianno-regular text-black/80 drop-shadow-lg mt-8">
             {data.phrase1}
           </p>
         </motion.div>
@@ -416,7 +433,7 @@ END:VCALENDAR
           viewport={{ once: true }}
           className="max-w-md mx-auto text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-rose-600 mb-6 tracking-wide">
+          <h2 className="text-3xl md:text-4xl montserrat-custom font-bold text-black/80 mb-6 tracking-wide">
             Calendario del Evento
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-rose-400 to-pink-400 mx-auto rounded-full mb-8"></div>
@@ -457,7 +474,7 @@ END:VCALENDAR
               return (
                 <>
                   <div className="mb-6">
-                    <h3 className="text-2xl font-serif text-rose-600 mb-1">
+                    <h3 className="text-2xl montserrat-custom text-black/80 mb-1">
                       {monthNames[month]} {year}
                     </h3>
                     <div className="text-sm text-gray-600 italic">
@@ -566,10 +583,39 @@ END:VCALENDAR
         </motion.div>
       </section>
 
+      {/* Sección personalizada 1 */}
+      <section
+        className="relative w-full min-h-[400px] md:min-h-[500px] flex items-center justify-center 
+             bg-center bg-cover rounded-lg overflow-hidden"
+        style={{
+          backgroundImage: data.customization?.image1
+            ? `url("${data.customization.image1}")`
+            : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* Marco blanco interno */}
+        <div className="absolute inset-3 md:inset-5 border-4 border-white rounded-lg pointer-events-none"></div>
+
+        {/* Contenedor de texto responsivo */}
+        <div className="relative max-w-[90%] md:max-w-2xl text-center px-4">
+          {data.customization?.text1 && (
+            <p
+              className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl montserrat-custom leading-snug 
+                   [text-shadow:_0_2px_4px_rgb(0_0_0_/_70%)]"
+            >
+              {data.customization.text1}
+            </p>
+          )}
+        </div>
+      </section>
+
       {/* Padrinos Interactivos */}
-      <section 
-      className="py-20 px-6 bg-gradient-to-br from-pink-50/30 via-rose-50/20 to-white"
-      style={{
+      <section
+        className="py-20 px-6 bg-gradient-to-br from-pink-50/30 via-rose-50/20 to-white"
+        style={{
           backgroundImage: data.customization?.godparentsBackgroundImages
             ? `url("${data.customization.godparentsBackgroundImages}")`
             : undefined,
@@ -640,7 +686,7 @@ END:VCALENDAR
 
                     {/* Nombre con transición */}
                     <motion.h3
-                      className="text-xl font-bold text-rose-600 font-serif mb-2 group-hover:text-pink-600 transition-colors duration-300"
+                      className="text-xl font-bold montserrat-custom text-black/80 mb-2 group-hover:text-pink-600 transition-colors duration-300"
                       initial={{ opacity: 0.9 }}
                       whileHover={{ opacity: 1 }}
                     >
@@ -681,8 +727,9 @@ END:VCALENDAR
       </section>
 
       {/* Ubicaciones con Imágenes y Mapas Interactivos */}
-      <section className="py-16 px-4 bg-gradient-to-r from-pink-50 to-rose-50"
-      style={{
+      <section
+        className="py-16 px-4 bg-gradient-to-r from-pink-50 to-rose-50"
+        style={{
           backgroundImage: data.customization?.locationImage
             ? `url("${data.customization.locationImage}")`
             : undefined,
@@ -693,11 +740,11 @@ END:VCALENDAR
       >
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-rose-600 mb-4">
+            <h2 className="text-4xl md:text-5xl montserrat-custom font-bold text-black/80 mb-4">
               Ubicaciones del Evento
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-rose-400 to-pink-400 mx-auto rounded-full"></div>
-            <p className="text-gray-600 text-lg md:text-xl mt-4 max-w-2xl mx-auto italianno-regular">
+            <p className="text-gray-600 text-3xl md:text-4xl mb-16 mx-auto italianno-regular leading-relaxed text-center">
               Acompáñanos en cada momento especial de este día inolvidable
             </p>
           </div>
@@ -749,17 +796,17 @@ END:VCALENDAR
                     </svg>
                   </div>
                   <div className="absolute bottom-4 left-4 right-4 bg-black/40 backdrop-blur-sm rounded-lg p-3 text-center">
-                    <h3 className="text-white font-bold text-lg">
+                    <h3 className="text-white font-bold montserrat-custom text-lg">
                       Ceremonia Religiosa
                     </h3>
                   </div>
                 </div>
 
                 <div className="p-6 text-center">
-                  <p className="text-black/80 text-base mb-1">
+                  <p className="text-black/80 montserrat-custom text-base mb-1">
                     <strong>Hora:</strong> {data.timeline[0]?.time || "17:00"}
                   </p>
-                  <p className="text-black/80 text-sm mb-4">
+                  <p className="text-black/80 montserrat-custom text-sm mb-4">
                     {data.churchAddress}
                   </p>
                   <button
@@ -817,17 +864,17 @@ END:VCALENDAR
                     </svg>
                   </div>
                   <div className="absolute bottom-4 left-4 right-4 bg-black/40 backdrop-blur-sm rounded-lg p-3 text-center">
-                    <h3 className="text-white font-bold text-lg">
+                    <h3 className="text-white font-bold montserrat-custom text-lg">
                       Recepción y Fiesta
                     </h3>
                   </div>
                 </div>
 
                 <div className="p-6 text-center">
-                  <p className="text-black/80 text-base mb-1">
+                  <p className="text-black/80 text-base montserrat-custom mb-1">
                     <strong>Hora:</strong> {data.timeline[1]?.time || "20:00"}
                   </p>
-                  <p className="text-black/80 text-sm mb-4">
+                  <p className="text-black/80 montserrat-custom text-sm mb-4">
                     {data.receptionAddress}
                   </p>
                   <button
@@ -851,9 +898,39 @@ END:VCALENDAR
         </div>
       </section>
 
+      {/* Sección personalizada 2 */}
+      <section
+        className="relative w-full min-h-[400px] md:min-h-[500px] flex items-center justify-center 
+             bg-center bg-cover rounded-lg overflow-hidden"
+        style={{
+          backgroundImage: data.customization?.image2
+            ? `url("${data.customization.image2}")`
+            : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* Marco blanco interno */}
+        <div className="absolute inset-3 md:inset-5 border-4 border-white rounded-lg pointer-events-none"></div>
+
+        {/* Contenedor de texto responsivo */}
+        <div className="relative max-w-[90%] md:max-w-2xl text-center px-4">
+          {data.customization?.text2 && (
+            <p
+              className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl montserrat-custom leading-snug 
+                   [text-shadow:_0_2px_4px_rgb(0_0_0_/_70%)]"
+            >
+              {data.customization.text2}
+            </p>
+          )}
+        </div>
+      </section>
+
       {/* Itinerario */}
-      <section className="relative py-20 px-6 overflow-hidden"
-      style={{
+      <section
+        className="relative py-20 px-6 overflow-hidden"
+        style={{
           backgroundImage: data.customization?.timelineImage
             ? `url("${data.customization.timelineImage}")`
             : undefined,
@@ -874,7 +951,7 @@ END:VCALENDAR
           viewport={{ once: true }}
           className="relative max-w-6xl mx-auto text-center z-10"
         >
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-rose-600 mb-6 tracking-wide">
+          <h2 className="text-4xl md:text-5xl font-bold text-rose-600 mb-6 montserrat-custom tracking-wide">
             Itinerario del Evento
           </h2>
           {/* Separador animado */}
@@ -885,7 +962,7 @@ END:VCALENDAR
             viewport={{ once: true }}
             className="h-1 bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 mx-auto rounded-full mb-12"
           ></motion.div>
-          <p className="text-gray-700 text-lg md:text-xl mb-16 max-w-3xl mx-auto leading-relaxed font-medium">
+          <p className="text-gray-700 text-lg md:text-xl mb-16 max-w-3xl mx-auto leading-relaxed montserrat-custom">
             Sigue el progreso del evento en tiempo real con esta elegante línea
             del tiempo
           </p>
@@ -938,7 +1015,7 @@ END:VCALENDAR
                   >
                     <div className="flex items-center justify-between mb-3">
                       {/* Hora en carta pequeña */}
-                      <div className="bg-gradient-to-r from-rose-100 to-pink-100 px-4 py-2 rounded-full text-sm font-bold text-rose-700 shadow-sm">
+                      <div className="bg-gradient-to-r from-rose-100 to-pink-100 px-4 py-2 rounded-full text-sm montserrat-custom text-rose-700 shadow-sm">
                         {item.time}
                       </div>
                       {/* Indicador de estado */}
@@ -965,14 +1042,9 @@ END:VCALENDAR
                     </div>
 
                     {/* Título destacado */}
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 font-serif tracking-wide">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2 montserrat-custom tracking-wide">
                       {item.event}
                     </h3>
-
-                    {/* Descripción sutil */}
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      Momento especial en la celebración
-                    </p>
                   </motion.div>
                 </motion.li>
               );
@@ -982,76 +1054,201 @@ END:VCALENDAR
       </section>
 
       {/* Hashtag */}
-      {data.hashtag && (
-        <section className="py-16 px-4 bg-gradient-to-r from-purple-100/50 to-pink-100/50"
+      {data.hashtag && (() => {
+        const hashtag = data.hashtag!;
+        return (
+          <section
+            className="py-16 px-4"
+            style={{
+              backgroundImage: data.customization?.hashtagImage
+                ? `url("${data.customization.hashtagImage}")`
+                : undefined,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="relative max-w-4xl mx-auto text-center z-10"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold montserrat-custom text-black/80 mb-6 tracking-wide">
+                Comparte Nuestra Alegría
+              </h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full mb-10"></div>
+
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="bg-white/80 backdrop-blur-md rounded-3xl p-10 shadow-2xl border border-purple-200/40 max-w-md mx-auto relative"
+              >
+                {/* Hashtag principal */}
+                <div className="mb-6">
+                  <Hash className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold montserrat-custom text-purple-700 mb-2">
+                    Hashtag Oficial
+                  </h3>
+
+                  {/* ✨ Hashtag con botón de copia */}
+                  <div className="flex items-center justify-center space-x-3">
+                    <motion.p
+                      animate={{ opacity: [1, 0.8, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="text-purple-600 montserrat-custom text-xl font-semibold tracking-wide bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
+                    >
+                      {hashtag}
+                    </motion.p>
+
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(hashtag);
+                        const toast = document.createElement("div");
+                        toast.textContent = "¡Copiado!";
+                        toast.className =
+                          "fixed bottom-8 right-8 bg-purple-600 text-white px-4 py-2 rounded-full shadow-lg text-sm font-semibold z-50 animate-bounce";
+                        document.body.appendChild(toast);
+                        setTimeout(() => toast.remove(), 2000);
+                      }}
+                      className="p-2 bg-purple-100 hover:bg-purple-200 rounded-full transition"
+                      title="Copiar hashtag"
+                    >
+                      <svg
+                        className="w-5 h-5 text-purple-600"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-2 12h4a2 2 0 002-2v-8a2 2 0 00-2-2h-4a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 🔁 Botón principal de compartir */}
+                <div className="flex justify-center mb-6">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{ repeat: Infinity, duration: 3 }}
+                    className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-full font-semibold hover:from-purple-600 hover:to-pink-700 transition-all duration-300 flex items-center space-x-2 shadow-lg"
+                    onClick={() => {
+                      const text = `¡Celebrando los XV años de ${data.name}! ${hashtag}`;
+                      const url = window.location.href;
+                      window.open(
+                        `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                          text
+                        )}&url=${encodeURIComponent(url)}`,
+                        "_blank"
+                      );
+                    }}
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                    </svg>
+                    <span>Compartir</span>
+                  </motion.button>
+                </div>
+
+                {/* 💬 Integración social ampliada */}
+                <div className="flex justify-center space-x-6">
+                  {/* Instagram */}
+                  <motion.a
+                    whileHover={{ scale: 1.1 }}
+                    href={`https://www.instagram.com/explore/tags/${hashtag.replace(
+                      "#",
+                      ""
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-600 hover:text-pink-700 transition"
+                    title="Ver en Instagram"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-7 h-7"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M7.5 2C4.46 2 2 4.46 2 7.5v9C2 19.54 4.46 22 7.5 22h9c3.04 0 5.5-2.46 5.5-5.5v-9C22 4.46 19.54 2 16.5 2h-9zM12 7a5 5 0 110 10 5 5 0 010-10zm6.5.25a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM12 9a3 3 0 100 6 3 3 0 000-6z" />
+                    </svg>
+                  </motion.a>
+
+                  {/* TikTok */}
+                  <motion.a
+                    whileHover={{ scale: 1.1 }}
+                    href="https://www.tiktok.com/tag/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(
+                        `https://www.tiktok.com/tag/${hashtag.replace(
+                          "#",
+                          ""
+                        )}`,
+                        "_blank"
+                      );
+                    }}
+                    className="text-black hover:text-gray-800 transition"
+                    title="Ver en TikTok"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-7 h-7"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M12.04 2h3.17c.1 1.23.61 2.26 1.46 3.11.85.85 1.88 1.36 3.11 1.46v3.17c-.97 0-1.9-.15-2.79-.44v7.47c0 1.73-.63 3.21-1.89 4.44C13.85 22.45 12.39 23 10.65 23c-1.73 0-3.2-.55-4.45-1.79C4.96 19.97 4.43 18.5 4.43 16.77c0-1.73.53-3.2 1.78-4.44 1.24-1.25 2.72-1.89 4.45-1.89.21 0 .41.01.61.03v3.3a3.23 3.23 0 00-.61-.06c-.89 0-1.63.31-2.25.92a3.07 3.07 0 00-.94 2.22c0 .91.31 1.65.94 2.27a3.18 3.18 0 002.25.92c.88 0 1.63-.31 2.25-.92a3.07 3.07 0 00.94-2.27V2z" />
+                    </svg>
+                  </motion.a>
+                </div>
+              </motion.div>
+            </motion.div>
+          </section>
+        );
+      })()}
+
+      {/* Sección personalizada 3 */}
+      <section
+        className="relative w-full min-h-[400px] md:min-h-[500px] flex items-center justify-center 
+             bg-center bg-cover rounded-lg overflow-hidden"
         style={{
-          backgroundImage: data.customization?.hashtagImage
-            ? `url("${data.customization.hashtagImage}")`
+          backgroundImage: data.customization?.image3
+            ? `url("${data.customization.image3}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <h2 className="text-4xl font-serif font-bold text-purple-600 mb-6 tracking-wide">
-              Comparte Nuestra Alegría
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto rounded-full mb-12"></div>
+      >
+        {/* Marco blanco interno */}
+        <div className="absolute inset-3 md:inset-5 border-4 border-white rounded-lg pointer-events-none"></div>
 
-            <motion.div
-              initial={{ scale: 0.8 }}
-              whileInView={{ scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="bg-white/80 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-purple-100/50 max-w-md mx-auto"
+        {/* Contenedor de texto responsivo */}
+        <div className="relative max-w-[90%] md:max-w-2xl text-center px-4">
+          {data.customization?.text3 && (
+            <p
+              className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl montserrat-custom leading-snug 
+                   [text-shadow:_0_2px_4px_rgb(0_0_0_/_70%)]"
             >
-              <div className="mb-6">
-                <Hash className="w-16 h-16 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-purple-700 mb-2">
-                  Hashtag Oficial
-                </h3>
-                <p className="text-purple-600 text-lg font-semibold tracking-wide">
-                  {data.hashtag}
-                </p>
-              </div>
-
-              <div className="flex justify-center space-x-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center space-x-2"
-                  onClick={() => {
-                    const text = `¡Celebrando los XV años de ${data.name}! ${data.hashtag}`;
-                    const url = window.location.href;
-                    window.open(
-                      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                        text
-                      )}&url=${encodeURIComponent(url)}`,
-                      "_blank"
-                    );
-                  }}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                  </svg>
-                  <span>Compartir</span>
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        </section>
-      )}
+              {data.customization.text3}
+            </p>
+          )}
+        </div>
+      </section>
 
       {/* Dress Code */}
       {data.dressCode && (
@@ -1059,13 +1256,13 @@ END:VCALENDAR
           aria-label="Código de vestimenta"
           className="py-16 px-4 bg-gradient-to-r from-indigo-100/50 to-purple-100/50"
           style={{
-          backgroundImage: data.customization?.dressCodeImage
-            ? `url("${data.customization.dressCodeImage}")`
-            : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+            backgroundImage: data.customization?.dressCodeImage
+              ? `url("${data.customization.dressCodeImage}")`
+              : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
         >
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -1074,7 +1271,7 @@ END:VCALENDAR
             viewport={{ once: true }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h2 className="text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-6 tracking-wide">
+            <h2 className="text-4xl font-serif montserrat-custom bg-clip-text bg-gradient-to-r text-black/80 mb-6 tracking-wide">
               Código de Vestimenta
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-indigo-400 to-purple-400 mx-auto rounded-full mb-12"></div>
@@ -1091,16 +1288,16 @@ END:VCALENDAR
                   aria-label="Icono de vestimenta"
                   className="w-16 h-16 text-indigo-600 mx-auto mb-4"
                 />
-                <h3 className="text-2xl font-bold text-indigo-700 mb-4">
+                <h3 className="text-2xl montserrat-custom text-indigo-700 mb-4">
                   ¿Qué vestir?
                 </h3>
-                <p className="text-gray-700 text-lg leading-relaxed">
+                <p className="text-gray-700 montserrat-custom leading-relaxed">
                   {data.dressCode}
                 </p>
               </div>
 
               {/* Opciones */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              <div className="pattaya-regular grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                 {[
                   {
                     icon: CheckCircle,
@@ -1144,16 +1341,17 @@ END:VCALENDAR
       )}
 
       {/* Mesa de Regalos */}
-      {data.giftRegistry && data.giftRegistry.length > 0 && (
-        <section className="py-16 px-4 bg-gradient-to-r from-emerald-100/50 to-teal-100/50"
-        style={{
-          backgroundImage: data.customization?.giftRegistryImage
-            ? `url("${data.customization.giftRegistryImage}")`
-            : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+      {data.giftRegistry && (
+        <section
+          className="py-16 px-4 bg-gradient-to-r from-emerald-100/50 to-teal-100/50"
+          style={{
+            backgroundImage: data.customization?.giftRegistryImage
+              ? `url("${data.customization.giftRegistryImage}")`
+              : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
         >
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -1162,7 +1360,7 @@ END:VCALENDAR
             viewport={{ once: true }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h2 className="text-4xl font-serif font-bold text-emerald-600 mb-6 tracking-wide">
+            <h2 className="text-4xl font-serif montserrat-custom text-black/80 mb-6 tracking-wide">
               Mesa de Regalos
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 mx-auto rounded-full mb-12"></div>
@@ -1176,17 +1374,18 @@ END:VCALENDAR
             >
               <div className="mb-6">
                 <Gift className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-emerald-700 mb-4">
+                <h3 className="text-2xl montserrat-custom text-emerald-700 mb-4">
                   Tu Presencia es el Mejor Regalo
                 </h3>
-                <p className="text-gray-700 text-lg leading-relaxed mb-6">
-                  Si deseas obsequiarnos algo especial, puedes elegir entre
-                  estas opciones:
+                <p className="text-gray-700 text-lg montserrat-custom leading-relaxed mb-6">
+                  {data.giftRegistry.length > 0
+                    ? "Si deseas obsequiarnos algo especial, puedes elegir entre estas opciones:"
+                    : "Si deseas contribuir, puedes hacerlo mediante transferencia bancaria:"}
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {data.giftRegistry?.map((registry: string, index: number) => (
+              <div className={`grid gap-4 ${data.giftRegistry.length > 0 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'}`}>
+                {data.giftRegistry.length > 0 && data.giftRegistry.map((registry: string, index: number) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
@@ -1198,7 +1397,7 @@ END:VCALENDAR
                     <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
                       <Store className="w-5 h-5 text-white" />
                     </div>
-                    <h4 className="font-semibold text-emerald-700 mb-2">
+                    <h4 className="montserrat-custom text-emerald-700 mb-2">
                       {registry}
                     </h4>
                     <motion.button
@@ -1234,8 +1433,8 @@ END:VCALENDAR
                   <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
                     <DollarSign className="w-5 h-5 text-white" />
                   </div>
-                  <h4 className="font-semibold text-emerald-700 mb-2">
-                    Transferencia Bancaria
+                  <h4 className="montserrat-custom text-emerald-700 mb-2">
+                    Lluvia de sobres
                   </h4>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -1249,8 +1448,8 @@ END:VCALENDAR
               </div>
 
               <div className="mt-8 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200/50">
-                <p className="text-emerald-700 text-sm">
-                  💝 Tu presencia y bendiciones son lo más importante para
+                <p className="text-black-700 text-3xl italianno-regular">
+                Tu presencia y bendiciones son lo más importante para
                   nosotros en este día especial.
                 </p>
               </div>
@@ -1260,8 +1459,9 @@ END:VCALENDAR
       )}
 
       {/* Galería */}
-      <section className="py-20 px-6 bg-white"
-      style={{
+      <section
+        className="py-20 px-6 bg-white"
+        style={{
           backgroundImage: data.customization?.specialThanksImage
             ? `url("${data.customization.specialThanksImage}")`
             : undefined,
@@ -1277,11 +1477,11 @@ END:VCALENDAR
           viewport={{ once: true }}
           className="max-w-6xl mx-auto text-center"
         >
-          <h2 className="text-4xl font-bold text-gray-800 mb-4 font-serif">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4 montserrat-custom">
             Momentos Especiales
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-rose-400 to-pink-400 mx-auto rounded-full mb-12"></div>
-          <p className="text-gray-600 text-lg mb-16 max-w-2xl mx-auto">
+          <p className="text-gray-600 text-lg mb-16 max-w-2xl mx-auto pattaya-regular">
             Una colección de recuerdos que esperamos compartir contigo en este
             día tan especial
           </p>
@@ -1421,8 +1621,9 @@ END:VCALENDAR
       </section>
 
       {/* Confirmar Asistencia */}
-      <section className="py-16 px-4 bg-gradient-to-br from-green-400 to-blue-500"
-      style={{
+      <section
+        className="py-16 px-4 bg-gradient-to-br from-green-400 to-blue-500"
+        style={{
           backgroundImage: data.customization?.rsvpImage
             ? `url("${data.customization.rsvpImage}")`
             : undefined,
@@ -1438,11 +1639,11 @@ END:VCALENDAR
           viewport={{ once: true }}
           className="max-w-4xl mx-auto text-center"
         >
-          <h2 className="text-4xl font-serif font-bold text-white mb-4 tracking-wide">
+          <h2 className="text-4xl montserrat-custom font-bold text-black mb-4 tracking-wide">
             Confirmar Asistencia
           </h2>
-          <div className="w-24 h-1 bg-white mx-auto rounded-full mb-8"></div>
-          <p className="text-white/90 text-lg mb-12 max-w-2xl mx-auto">
+          <div className="w-24 h-1 bg-black mx-auto rounded-full mb-8"></div>
+          <p className="text-black/90 text-lg mb-12 max-w-2xl mx-auto pattaya-regular">
             Tu presencia es muy importante para nosotros. Confirma tu asistencia
             de la manera que prefieras.
           </p>
@@ -1526,7 +1727,7 @@ END:VCALENDAR
             className="bg-white rounded-3xl p-8 shadow-2xl max-w-md mx-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-2xl mb-4">
+            <p className="text-2xl mb-4 montserrat-custom text-gray-800">
               Gracias por avisarnos, te extrañaremos 💔
             </p>
             <button
@@ -1592,16 +1793,19 @@ END:VCALENDAR
         </motion.div>
       )}
 
-      {/* Footer */}
+      {/* Footer clásico minimalista */}
       <motion.footer
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 1 }}
         viewport={{ once: true }}
-        className="text-center py-10 text-gray-600 bg-gradient-to-r from-pink-100 to-rose-100"
+        className="text-center py-10 bg-white border-t border-gray-200"
       >
-        <p>
-          Con mucho cariño, <span className="text-rose-600">{data.name}</span>
+        <h2 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-wide">
+          ESSENCIAL PUEBLA
+        </h2>
+        <p className="text-gray-500 mt-2 text-sm md:text-base italic">
+          Invitaciones digitales personalizadas con estilo y elegancia.
         </p>
       </motion.footer>
 

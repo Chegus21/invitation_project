@@ -43,6 +43,12 @@ export interface QuinceaneraData {
     giftRegistryImage?: string;
     specialThanksImage?: string;
     rsvpImage?: string;
+    image1?: string;
+    text1?: string;
+    image2?: string;
+    text2?: string;
+    image3?: string;
+    text3?: string;
   };
 }
 
@@ -109,25 +115,32 @@ export const invitationsDatabase: Record<string, QuinceaneraData> = {
       receptionImage:
         "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&h=600&fit=crop",
       countdownImage:
-        "/media/XV_Sofia/desktop-wallpaper-blue-flower-pastel-blue-flowers.jpg",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       calendarImage:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
       godparentsBackgroundImages:
-        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       locationImage:
-        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
       timelineImage:
-        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       hashtagImage:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
       dressCodeImage:
-        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       giftRegistryImage:
-        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
       specialThanksImage:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       rsvpImage:
-        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
+      image1: "/media/XV_Sofia/Sofia -45.jpg",
+      text1: "«La sonrisa que me provoca tu mirada, será mi alegría por toda la eternidad»",
+      image2: "/media/XV_Sofia/Sofia -96.jpg",
+      text2: "«Cada momento a tu lado es un tesoro que guardo en mi corazón para siempre»",
+      image3: "/media/XV_Sofia/Sofia -38.jpg",
+      text3: "«Eres la melodía que llena mi vida de alegría y amor infinito»",
+
       galleryImages: [
         "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
         "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
@@ -162,8 +175,10 @@ export const invitationsDatabase: Record<string, QuinceaneraData> = {
     hashtag: "#SofiaXVAños",
     dressCode:
       "Elegante - Colores sugeridos: Azul marino, dorado y blanco (evitar negro y rojo)",
-    giftRegistry: ["Sears", "Coppel", "Mercado Libre"],
+    giftRegistry: [],
     giftLink: [],
+    phrase1:
+      "Un momento íntimo, debido a la situación, hemos planificado para elogiar esta hermosa ocasión. Y tú, que eres parte de nuestra preciosa familia, no puedes faltar a esta reunión.",
     timeline: [
       { time: "11:42", event: "Ceremonia Religiosa" },
       { time: "11:43", event: "Recepción de Invitados" },
@@ -188,25 +203,31 @@ export const invitationsDatabase: Record<string, QuinceaneraData> = {
       receptionImage:
         "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop",
       countdownImage:
-        "/media/XV_Sofia/desktop-wallpaper-blue-flower-pastel-blue-flowers.jpg",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       calendarImage:
-        "/media/XV_Sofia/Sofia -118.jpg",
+        "/media/fondos/9.jpg",
       godparentsBackgroundImages:
-        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       locationImage:
-        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
       timelineImage:
-        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       hashtagImage:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
       dressCodeImage:
-        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       giftRegistryImage:
-        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
       specialThanksImage:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+        "/media/fondos/fondo-de-diseno-con-textura-simple-blanco.jpg",
       rsvpImage:
-        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=400&fit=crop",
+        "/media/fondos/9.jpg",
+      image1: "/media/XV_Sofia/Sofia -13.jpg",
+      text1: "«La vida es un viaje hermoso, y tú eres mi destino favorito»",
+      image2: "/media/XV_Sofia/Sofia -76.jpg",
+      text2: "«Eres la luz que ilumina mi camino y llena mi vida de alegría»",
+      image3: "/media/XV_Sofia/Sofia -45.jpg",
+      text3: "«Contigo, cada día es una aventura llena de amor y felicidad»",
       galleryImages: [
         "/media/XV_Sofia/Sofia -3.jpg",
         "/media/XV_Sofia/Sofia -13.jpg",
