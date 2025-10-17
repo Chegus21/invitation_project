@@ -17,12 +17,12 @@ const InvitationPage: React.FC = () => {
 function App() {
   return (
     <Router>
-      <ProtectedRoute>
+      
         <Routes>
           <Route path="/invitation_project/" element={<InvitationSelector />} />
           <Route path="/invitation_project/invitation/:id" element={<InvitationPage />} />
         </Routes>
-      </ProtectedRoute>
+      
     </Router>
   );
 }
