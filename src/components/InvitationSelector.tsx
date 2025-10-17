@@ -1,9 +1,40 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { getAllInvitationIds, getInvitationData } from '../data/invitations';
 import { Calendar, User, ExternalLink } from 'lucide-react';
 
 export const InvitationSelector: React.FC = () => {
+  const location = useLocation();
+
+  // 🔒 Si NO estás en una invitación válida y NO eres admin, bloquea el acceso
+  const isInvitationRoute = /^\/invitation\/[a-zA-Z0-9-_]+$/.test(location.pathname);
+  const queryParams = new URLSearchParams(location.search);
+  const adminKey = queryParams.get("admin");
+  const ADMIN_KEY = "zeus-access";
+  const isAdmin = localStorage.getItem("isAdmin") === "true" || adminKey === ADMIN_KEY;
+
+  if (!isInvitationRoute && !isAdmin) {
+    // 🔁 Redirigir a una invitación por defecto (por ejemplo, la primera disponible)
+    const invitationIds = getAllInvitationIds();
+    if (invitationIds.length > 0) {
+      const firstInvitationId = invitationIds[0];
+      return <Navigate to={`/invitation_project/invitation/${firstInvitationId}`} replace />;
+    }
+
+    // 🚫 Si no hay invitaciones, mostrar acceso denegado
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">Acceso restringido</h2>
+          <p className="text-gray-600">
+            Esta página no está disponible públicamente.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 🟢 Si la ruta es una invitación válida, renderiza normalmente
   const invitationIds = getAllInvitationIds();
 
   return (
@@ -11,7 +42,7 @@ export const InvitationSelector: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 mb-6 font-serif">
-            ESSENCIAL PUEBLA 
+            ESSENCIAL PUEBLA
           </h1>
           <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 mb-6 font-serif">
             Invitaciones Digitales
@@ -28,7 +59,10 @@ export const InvitationSelector: React.FC = () => {
             if (!data) return null;
 
             return (
-              <div key={id} className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-blue-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div
+                key={id}
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-blue-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
                 <div className="text-center mb-6">
                   <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <User className="w-10 h-10 text-white" />
@@ -63,13 +97,13 @@ export const InvitationSelector: React.FC = () => {
 
                 <div className="space-y-3">
                   <Link
-                    to={`/invitation/${id}`}
+                    to={`/invitation_project/invitation/${id}`}
                     className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-cyan-600 transition-colors duration-300 flex items-center justify-center space-x-2"
                   >
                     <span>Ver Invitación</span>
                     <ExternalLink className="w-4 h-4" />
                   </Link>
-                  
+
                   <button
                     onClick={() => {
                       const url = `${window.location.origin}/invitation/${id}`;
@@ -84,14 +118,13 @@ export const InvitationSelector: React.FC = () => {
 
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                   <p className="text-xs text-blue-600 text-center">
-                    <strong>Link único:</strong> /invitation/{id}
+                    <strong>Link único:</strong> /invitation_project/invitation/{id}
                   </p>
                 </div>
               </div>
             );
           })}
         </div>
-
       </div>
     </div>
   );
