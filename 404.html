@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script type="text/javascript">
+      // Redirige a la raíz del proyecto, conservando la URL original
+      var redirectTo = window.location.pathname.replace('/invitation_project', '');
+      sessionStorage.redirect = redirectTo;
+      window.location.href = '/invitation_project/';
+    </script>
+  </head>
+  <body></body>
+</html>
