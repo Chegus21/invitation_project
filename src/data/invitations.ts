@@ -95,14 +95,16 @@ export const invitationsDatabase: Record<string, QuinceaneraData> = {
     phone: "",
     whatsapp: "",
     googleFormsLink:
-      "https://docs.google.com/forms/d/e/1FAIpQLSeNueoWGOywLruyM_IR-DqGtacPVVKnNXeS_vLdpk3KYYDOxA/viewform?usp=dialog",
+      "https://forms.gle/kSzVn3M79n12xdFo6",
     musicLink: "/music/04 - Video Games - Lana Del Rey.mp3",
 
     colors: {
-      primary: "green",
-      secondary: "violet",
-      accent: "pink",
-    },
+  primary: "#B71C1C",   // Rojo suave / rosado (fondos suaves, etiquetas)
+  secondary: "#D32F2F", // Rojo fuerte elegante (botones, títulos, énfasis)
+  accent: "#E57373",    // Rojo intenso/profundo (detalles premium, bordes, hover)
+
+}
+,
     customization: {
       headerImage: "/media/America/WhatsApp1.jpeg",
       churchImage:

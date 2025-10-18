@@ -47,6 +47,11 @@ interface InvitationTemplateProps {
       cardNumber: string;
       bank: string;
     };
+    colors: {
+      primary: string;
+      secondary: string;
+      accent: string;
+    };
     customization?: {
       headerImage?: string;
       countdownImage?: string;
@@ -159,17 +164,17 @@ const InvitationTemplate: React.FC<InvitationTemplateProps> = ({ data }) => {
   useEffect(() => {
     if (!data.musicLink) return;
 
-    const audio = new Audio(`${import.meta.env.BASE_URL}${data.musicLink.replace(/^\//, '')}`);
-    audio.autoplay = true;
-    audio.loop = true;
-    audio.muted = false;
+    const audio = new Audio(
+      `${import.meta.env.BASE_URL}${data.musicLink.replace(/^\//, "")}`
+    );
 
+    audio.loop = true;
+
+    // Eventos para cambiar el estado visual
     audio.addEventListener("play", () => setIsPlaying(true));
     audio.addEventListener("pause", () => setIsPlaying(false));
 
     setPlayer(audio);
-
-    
 
     return () => {
       audio.pause();
@@ -317,7 +322,7 @@ END:VCALENDAR
 
   return (
     <div className="font-sans text-gray-800 ">
-      {/* Header */}
+      {/* Header con imagen de fondo */}
       <motion.header
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -325,7 +330,9 @@ END:VCALENDAR
         className="relative min-h-screen flex items-center justify-center overflow-hidden bg"
         style={{
           backgroundImage: data.customization?.headerImage
-            ? `url("${import.meta.env.BASE_URL}${data.customization.headerImage.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.headerImage.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -334,17 +341,30 @@ END:VCALENDAR
       >
         {/* Marco blanco interno */}
         <div className="absolute inset-3 md:inset-5 border-4 border-white rounded-lg pointer-events-none"></div>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
-          <p className="text-6xl md:text-9xl text-white mb-2 drop-shadow-lg pattaya-regular">
-            {data.name}
-          </p>
+
+        {/* Texto superior: Mis XV Años */}
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-center">
           <h1 className="text-2xl md:text-3xl montserrat-custom text-white drop-shadow-lg">
             Mis XV Años
           </h1>
         </div>
+
+        {/* Texto inferior: nombre y fecha */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+          <p className="text-8xl md:text-9x1 text-white mb-2 drop-shadow-lg pattaya-regular">
+            {data.name}
+          </p>
+          <h2 className="text-2xl md:text-3xl montserrat-custom text-white drop-shadow-lg">
+            {new Date(data.eventDate).toLocaleDateString("es-MX", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
+          </h2>
+        </div>
       </motion.header>
 
-      {/* Nuestros Padres */}
+      {/* Padres */}
       <section className="py-16 px-4 bg-gradient-to-r from-rose-50/50 to-pink-50/50">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -356,7 +376,12 @@ END:VCALENDAR
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-black/80 mb-6 tracking-wide">
             Nuestros Padres
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-rose-400 to-pink-400 mx-auto rounded-full mb-8"></div>
+          <div
+            className="w-20 h-1 mx-auto rounded-full mb-8"
+            style={{
+              background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+            }}
+          ></div>
 
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -368,25 +393,27 @@ END:VCALENDAR
             <div className="mb-6">
               <Heart className="w-16 h-16 text-rose-600 mx-auto mb-4" />
               <p className="text-2xl md:text-3xl italianno-regular text-black/80 drop-shadow-lg mt-8r">
-                Con el amor y el apoyo incondicional de quienes nos dieron la vida
+                Con el amor y el apoyo incondicional de quienes nos dieron la
+                vida
               </p>
             </div>
 
             <div className="space-y-4">
-              {data.parentsNames && data.parentsNames.map((parent, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="bg-gradient-to-r from-rose-100 to-pink-100 rounded-2xl p-4 border border-rose-200/50"
-                >
-                  <p className="text-rose-700 font-semibold montserrat-custom text-lg">
-                    {parent}
-                  </p>
-                </motion.div>
-              ))}
+              {data.parentsNames &&
+                data.parentsNames.map((parent, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="bg-gradient-to-r from-rose-100 to-pink-100 rounded-2xl p-4 border border-rose-200/50"
+                  >
+                    <p className="text-rose-700 font-semibold montserrat-custom text-lg">
+                      {parent}
+                    </p>
+                  </motion.div>
+                ))}
             </div>
           </motion.div>
         </motion.div>
@@ -398,8 +425,9 @@ END:VCALENDAR
         className="relative py-16 px-4 bg-gradient-to-r"
         style={{
           backgroundImage: data.customization?.countdownImage
-            ? 
-            `url("${import.meta.env.BASE_URL}${data.customization.countdownImage.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.countdownImage.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -475,8 +503,9 @@ END:VCALENDAR
         className="py-16 px-4 bg-gradient-to-r from-rose-50/50 to-pink-50/50"
         style={{
           backgroundImage: data.customization?.calendarImage
-            ? 
-            `url("${import.meta.env.BASE_URL}${data.customization.calendarImage.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.calendarImage.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -493,7 +522,12 @@ END:VCALENDAR
           <h2 className="text-3xl md:text-4xl montserrat-custom font-bold text-black/80 mb-6 tracking-wide">
             Calendario del Evento
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-rose-400 to-pink-400 mx-auto rounded-full mb-8"></div>
+          <div
+            className="w-20 h-1 mx-auto rounded-full mb-8"
+            style={{
+              background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+            }}
+          ></div>
 
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -650,8 +684,9 @@ END:VCALENDAR
              bg-center bg-cover rounded-lg overflow-hidden"
         style={{
           backgroundImage: data.customization?.image1
-            ? 
-            `url("${import.meta.env.BASE_URL}${data.customization.image1.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.image1.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -685,7 +720,12 @@ END:VCALENDAR
         className="py-20 px-6 bg-gradient-to-br from-pink-50/30 via-rose-50/20 to-white"
         style={{
           backgroundImage: data.customization?.godparentsBackgroundImages
-            ? `url("${import.meta.env.BASE_URL}${data.customization.godparentsBackgroundImages.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.godparentsBackgroundImages.replace(
+                /^\//,
+                ""
+              )}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -702,7 +742,12 @@ END:VCALENDAR
           <h2 className="text-4xl font-bold text-black-50 mb-4 font-serif">
             Nuestros Padrinos
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-rose-400 mx-auto rounded-full mb-12"></div>
+          <div
+            className="w-20 h-1 mx-auto rounded-full mb-8"
+            style={{
+              background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+            }}
+          ></div>
           <p className="text-gray-600 text-3xl md:text-4xl mb-16 mx-auto italianno-regular leading-relaxed text-center">
             Personas especiales que nos acompañan en este momento tan importante
             de nuestras vidas
@@ -799,7 +844,9 @@ END:VCALENDAR
         className="py-16 px-4 bg-gradient-to-r from-pink-50 to-rose-50"
         style={{
           backgroundImage: data.customization?.locationImage
-            ? `url("${import.meta.env.BASE_URL}${data.customization.locationImage.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.locationImage.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -811,7 +858,12 @@ END:VCALENDAR
             <h2 className="text-4xl md:text-5xl montserrat-custom font-bold text-black/80 mb-4">
               Ubicaciones del Evento
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-rose-400 to-pink-400 mx-auto rounded-full"></div>
+            <div
+              className="w-20 h-1 mx-auto rounded-full mb-8"
+              style={{
+                background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+              }}
+            ></div>
             <p className="text-gray-600 text-3xl md:text-4xl mb-16 mx-auto italianno-regular leading-relaxed text-center">
               Acompáñanos en cada momento especial de este día inolvidable
             </p>
@@ -846,7 +898,9 @@ END:VCALENDAR
                     src={
                       data.customization.churchImage.startsWith("http")
                         ? data.customization.churchImage
-                        : `${import.meta.env.BASE_URL}${data.customization.churchImage.replace(/^\//, '')}`
+                        : `${
+                            import.meta.env.BASE_URL
+                          }${data.customization.churchImage.replace(/^\//, "")}`
                     }
                     alt="Recepción y fiesta"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -890,7 +944,10 @@ END:VCALENDAR
                         "_blank"
                       )
                     }
-                    className="w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-rose-600 hover:to-pink-600 transition-all duration-300 flex items-center justify-center space-x-2"
+                    className="w-full text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2"
+                    style={{
+                      background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+                    }}
                   >
                     <MapPin className="w-5 h-5" />
                     <span>Ver en Google Maps</span>
@@ -923,7 +980,12 @@ END:VCALENDAR
                     src={
                       data.customization.receptionImage.startsWith("http")
                         ? data.customization.receptionImage
-                        : `${import.meta.env.BASE_URL}${data.customization.receptionImage.replace(/^\//, '')}`
+                        : `${
+                            import.meta.env.BASE_URL
+                          }${data.customization.receptionImage.replace(
+                            /^\//,
+                            ""
+                          )}`
                     }
                     alt="Recepción y fiesta"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -957,12 +1019,15 @@ END:VCALENDAR
                     onClick={() =>
                       window.open(
                         `https://maps.app.goo.gl/${encodeURIComponent(
-                        data.receptionLink
+                          data.receptionLink
                         )}`,
                         "_blank"
                       )
                     }
                     className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 flex items-center justify-center space-x-2"
+                    style={{
+                      background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+                    }}
                   >
                     <MapPin className="w-5 h-5" />
                     <span>Ver en Google Maps</span>
@@ -984,7 +1049,9 @@ END:VCALENDAR
              bg-center bg-cover rounded-lg overflow-hidden"
         style={{
           backgroundImage: data.customization?.image2
-            ? `url("${import.meta.env.BASE_URL}${data.customization.image2.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.image2.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1018,7 +1085,9 @@ END:VCALENDAR
         className="relative py-20 px-6 overflow-hidden"
         style={{
           backgroundImage: data.customization?.timelineImage
-            ? `url("${import.meta.env.BASE_URL}${data.customization.timelineImage.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.timelineImage.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1046,8 +1115,15 @@ END:VCALENDAR
             whileInView={{ width: "6rem" }}
             transition={{ duration: 1, delay: 0.3 }}
             viewport={{ once: true }}
-            className="h-1 bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 mx-auto rounded-full mb-12"
-          ></motion.div>
+            className="h-1 bg-gradient-to-r mx-auto rounded-full mb-12"
+          >
+            <div
+              className="w-20 h-1 mx-auto rounded-full mb-8"
+              style={{
+                background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+              }}
+            ></div>
+          </motion.div>
           <p className="text-gray-700 text-lg md:text-xl mb-16 max-w-3xl mx-auto leading-relaxed montserrat-custom">
             Sigue el progreso del evento en tiempo real con esta elegante línea
             del tiempo
@@ -1060,7 +1136,12 @@ END:VCALENDAR
             aria-label="Cronograma del evento de quince años"
           >
             {/* Línea vertical con degradado dinámico */}
-            <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-rose-300 via-pink-400 to-purple-500 rounded-full shadow-lg"></div>
+            <div
+              className="absolute left-8 top-0 bottom-0 w-1 rounded-full shadow-lg"
+              style={{
+                background: `linear-gradient(to bottom, ${data.colors.primary}, ${data.colors.accent}, ${data.colors.secondary})`,
+              }}
+            ></div>
 
             {data.timeline.map((item, index) => {
               const passed = passedEvents[index] || false;
@@ -1148,7 +1229,9 @@ END:VCALENDAR
               className="py-16 px-4"
               style={{
                 backgroundImage: data.customization?.hashtagImage
-                  ? `url("${import.meta.env.BASE_URL}${data.customization.hashtagImage.replace(/^\//, '')}")`
+                  ? `url("${
+                      import.meta.env.BASE_URL
+                    }${data.customization.hashtagImage.replace(/^\//, "")}")`
                   : undefined,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -1165,7 +1248,12 @@ END:VCALENDAR
                 <h2 className="text-4xl md:text-5xl font-bold montserrat-custom text-black/80 mb-6 tracking-wide">
                   Comparte Nuestra Alegría
                 </h2>
-                <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full mb-10"></div>
+                <div
+                  className="w-20 h-1 mx-auto rounded-full mb-8"
+                  style={{
+                    background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+                  }}
+                ></div>
 
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
@@ -1176,8 +1264,14 @@ END:VCALENDAR
                 >
                   {/* Hashtag principal */}
                   <div className="mb-6">
-                    <Hash className="w-16 h-16 text-purple-600 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold montserrat-custom text-purple-700 mb-2">
+                    <Hash
+                      className="w-16 h-16 mx-auto mb-4"
+                      style={{ color: data.colors.primary }}
+                    />
+                    <h3
+                      className="text-2xl font-bold montserrat-custom mb-2"
+                      style={{ color: data.colors.primary }}
+                    >
                       Hashtag Oficial
                     </h3>
 
@@ -1186,7 +1280,10 @@ END:VCALENDAR
                       <motion.p
                         animate={{ opacity: [1, 0.8, 1] }}
                         transition={{ repeat: Infinity, duration: 2 }}
-                        className="text-purple-600 montserrat-custom text-xl font-semibold tracking-wide bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
+                        className="montserrat-custom text-xl font-semibold tracking-wide bg-clip-text text-transparent"
+                        style={{
+                          color: data.colors.primary,
+                        }}
                       >
                         {hashtag}
                       </motion.p>
@@ -1205,11 +1302,14 @@ END:VCALENDAR
                         title="Copiar hashtag"
                       >
                         <svg
-                          className="w-5 h-5 text-purple-600"
+                          className="w-5 h-5"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"
                           viewBox="0 0 24 24"
+                          style={{
+                            color: data.colors.primary,
+                          }}
                         >
                           <path
                             strokeLinecap="round"
@@ -1221,7 +1321,7 @@ END:VCALENDAR
                     </div>
                   </div>
 
-                  {/* 🔁 Botón principal de compartir */}
+                  {/* 🔁 Botón principal de compartir (Instagram) */}
                   <div className="flex justify-center mb-6">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -1229,13 +1329,13 @@ END:VCALENDAR
                       animate={{ y: [0, -3, 0] }}
                       transition={{ repeat: Infinity, duration: 3 }}
                       className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-full font-semibold hover:from-purple-600 hover:to-pink-700 transition-all duration-300 flex items-center space-x-2 shadow-lg"
+                      style={{
+                        background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+                      }}
                       onClick={() => {
-                        const text = `¡Celebrando los XV años de ${data.name}! ${hashtag}`;
-                        const url = window.location.href;
+                        const hashtagText = hashtag.replace("#", "");
                         window.open(
-                          `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                            text
-                          )}&url=${encodeURIComponent(url)}`,
+                          `https://www.instagram.com/explore/tags/${hashtagText}/`,
                           "_blank"
                         );
                       }}
@@ -1245,25 +1345,24 @@ END:VCALENDAR
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                        <path d="M7.5 2C4.46 2 2 4.46 2 7.5v9C2 19.54 4.46 22 7.5 22h9c3.04 0 5.5-2.46 5.5-5.5v-9C22 4.46 19.54 2 16.5 2h-9zM12 7a5 5 0 110 10 5 5 0 010-10zm6.5.25a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM12 9a3 3 0 100 6 3 3 0 000-6z" />
                       </svg>
-                      <span>Compartir</span>
+                      <span>Ver en Instagram</span>
                     </motion.button>
                   </div>
 
                   {/* 💬 Integración social ampliada */}
                   <div className="flex justify-center space-x-6">
-                    {/* Instagram */}
+                    {/* X (Twitter) */}
                     <motion.a
                       whileHover={{ scale: 1.1 }}
-                      href={`https://www.instagram.com/explore/tags/${hashtag.replace(
-                        "#",
-                        ""
+                      href={`https://x.com/intent/post?text=${encodeURIComponent(
+                        `¡Celebrando los XV años de ${data.name}! ${hashtag}`
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-pink-600 hover:text-pink-700 transition"
-                      title="Ver en Instagram"
+                      className="text-black hover:text-gray-800 transition"
+                      title="Compartir en X"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1271,7 +1370,7 @@ END:VCALENDAR
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path d="M7.5 2C4.46 2 2 4.46 2 7.5v9C2 19.54 4.46 22 7.5 22h9c3.04 0 5.5-2.46 5.5-5.5v-9C22 4.46 19.54 2 16.5 2h-9zM12 7a5 5 0 110 10 5 5 0 010-10zm6.5.25a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM12 9a3 3 0 100 6 3 3 0 000-6z" />
+                        <path d="M18.244 2h3.314l-7.227 8.26L22 22h-6.634l-5.197-6.783L4.244 22H.93l7.7-8.8L2 2h6.756l4.713 6.236L18.244 2z" />
                       </svg>
                     </motion.a>
 
@@ -1318,7 +1417,9 @@ END:VCALENDAR
              bg-center bg-cover rounded-lg overflow-hidden"
         style={{
           backgroundImage: data.customization?.image3
-            ? `url("${import.meta.env.BASE_URL}${data.customization.image3.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.image3.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1354,7 +1455,9 @@ END:VCALENDAR
           className="py-16 px-4 bg-gradient-to-r from-indigo-100/50 to-purple-100/50"
           style={{
             backgroundImage: data.customization?.dressCodeImage
-              ? `url("${import.meta.env.BASE_URL}${data.customization.dressCodeImage.replace(/^\//, '')}")`
+              ? `url("${
+                  import.meta.env.BASE_URL
+                }${data.customization.dressCodeImage.replace(/^\//, "")}")`
               : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -1371,7 +1474,12 @@ END:VCALENDAR
             <h2 className="text-4xl font-serif montserrat-custom bg-clip-text bg-gradient-to-r text-black/80 mb-6 tracking-wide">
               Código de Vestimenta
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-indigo-400 to-purple-400 mx-auto rounded-full mb-12"></div>
+            <div
+              className="w-20 h-1 mx-auto rounded-full mb-8"
+              style={{
+                background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+              }}
+            ></div>
 
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -1383,9 +1491,14 @@ END:VCALENDAR
               <div className="mb-6">
                 <Shirt
                   aria-label="Icono de vestimenta"
-                  className="w-16 h-16 text-indigo-600 mx-auto mb-4"
+                  className="w-16 h-16 mx-auto mb-4"
+                  style={{ color: data.colors.primary }}
                 />
-                <h3 className="text-2xl montserrat-custom text-indigo-700 mb-4">
+
+                <h3
+                  className="text-2xl montserrat-custom mb-4"
+                  style={{ color: data.colors.primary }}
+                >
                   ¿Qué vestir?
                 </h3>
                 <p className="text-gray-700 montserrat-custom leading-relaxed">
@@ -1399,17 +1512,14 @@ END:VCALENDAR
                   {
                     icon: CheckCircle,
                     label: "Elegante",
-                    gradient: "from-indigo-400 to-purple-500",
                   },
                   {
                     icon: Heart,
                     label: "Cómodo",
-                    gradient: "from-purple-400 to-pink-500",
                   },
                   {
                     icon: Sparkles,
                     label: "Festivo",
-                    gradient: "from-pink-400 to-rose-500",
                   },
                 ].map((item, idx) => (
                   <motion.div
@@ -1419,7 +1529,10 @@ END:VCALENDAR
                     className="text-center"
                   >
                     <div
-                      className={`w-14 h-14 bg-gradient-to-br ${item.gradient} rounded-full flex items-center justify-center mx-auto mb-3 shadow-md`}
+                      className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md"
+                      style={{
+                        background: `linear-gradient(to bottom right, ${data.colors.primary}, ${data.colors.accent})`,
+                      }}
                     >
                       <item.icon
                         className="w-7 h-7 text-white"
@@ -1443,7 +1556,9 @@ END:VCALENDAR
           className="py-16 px-4 bg-gradient-to-r from-emerald-100/50 to-teal-100/50"
           style={{
             backgroundImage: data.customization?.giftRegistryImage
-              ? `url("${import.meta.env.BASE_URL}${data.customization.giftRegistryImage.replace(/^\//, '')}")`
+              ? `url("${
+                  import.meta.env.BASE_URL
+                }${data.customization.giftRegistryImage.replace(/^\//, "")}")`
               : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -1460,7 +1575,12 @@ END:VCALENDAR
             <h2 className="text-4xl font-serif montserrat-custom text-black/80 mb-6 tracking-wide">
               Mesa de Regalos
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 mx-auto rounded-full mb-12"></div>
+            <div
+              className="w-20 h-1 mx-auto rounded-full mb-8"
+              style={{
+                background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+              }}
+            ></div>
 
             <motion.div
               initial={{ scale: 0.8 }}
@@ -1567,7 +1687,9 @@ END:VCALENDAR
         className="py-20 px-6 bg-white"
         style={{
           backgroundImage: data.customization?.specialThanksImage
-            ? `url("${import.meta.env.BASE_URL}${data.customization.specialThanksImage.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.specialThanksImage.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1584,7 +1706,12 @@ END:VCALENDAR
           <h2 className="text-4xl font-bold text-gray-800 mb-4 montserrat-custom">
             Momentos Especiales
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-rose-400 to-pink-400 mx-auto rounded-full mb-12"></div>
+          <div
+            className="w-20 h-1 mx-auto rounded-full mb-8"
+            style={{
+              background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
+            }}
+          ></div>
           <p className="text-gray-600 text-lg mb-16 max-w-2xl mx-auto pattaya-regular">
             Una colección de recuerdos que esperamos compartir contigo en este
             día tan especial
@@ -1601,9 +1728,9 @@ END:VCALENDAR
             >
               <div className="relative h-56 overflow-hidden rounded-lg md:h-96 lg:h-[500px] xl:h-[600px]">
                 {images.map((image, index) => {
-                  const imageUrl = image.startsWith('http')
+                  const imageUrl = image.startsWith("http")
                     ? image
-                    : `${import.meta.env.BASE_URL}${image.replace(/^\//, '')}`;
+                    : `${import.meta.env.BASE_URL}${image.replace(/^\//, "")}`;
                   return (
                     <div
                       key={index}
@@ -1734,7 +1861,9 @@ END:VCALENDAR
         className="py-16 px-4 bg-gradient-to-br from-green-400 to-blue-500"
         style={{
           backgroundImage: data.customization?.rsvpImage
-            ? `url("${import.meta.env.BASE_URL}${data.customization.rsvpImage.replace(/^\//, '')}")`
+            ? `url("${
+                import.meta.env.BASE_URL
+              }${data.customization.rsvpImage.replace(/^\//, "")}")`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1854,94 +1983,34 @@ END:VCALENDAR
       {/* Sobres sin info */}
 
       {showBankDetails && (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5, ease: "easeOut" }}
-    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-    onClick={() => setShowBankDetails(false)}
-  >
-    <div
-      className="bg-white rounded-3xl p-10 shadow-xl max-w-md mx-4 text-center"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <h3 className="text-3xl font-semibold mb-5 text-emerald-700 tracking-wide">
-        Lluvia de Sobres
-      </h3>
-      <p className="text-gray-700 leading-relaxed text-lg italic">
-        El mejor regalo es tu presencia en este día tan especial.  
-        Pero si deseas obsequiar algo más,  
-        un sobre con tu cariño será recibido con profunda gratitud.
-      </p>
-      <button
-        onClick={() => setShowBankDetails(false)}
-        className="mt-8 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-8 rounded-full font-medium transition-all shadow-sm"
-      >
-        Cerrar
-      </button>
-    </div>
-  </motion.div>
-)}
-
-{/* Bank Details Modal 
-      {showBankDetails && (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5, ease: "easeOut" }}
-    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-    onClick={() => setShowBankDetails(false)}
-  >
-    <div
-      className="bg-white rounded-3xl p-10 shadow-xl max-w-md mx-4 text-center"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <h3 className="text-3xl font-semibold mb-5 text-emerald-700 tracking-wide">
-        Lluvia de Sobres
-      </h3>
-      {data.bankTransferDetails ? (
-        <div className="space-y-4 text-left">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">Banco</p>
-            <p className="font-semibold">
-              {data.bankTransferDetails.bank}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+          onClick={() => setShowBankDetails(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-10 shadow-xl max-w-md mx-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-3xl font-semibold mb-5 text-emerald-700 tracking-wide">
+              Lluvia de Sobres
+            </h3>
+            <p className="text-gray-700 leading-relaxed text-lg italic">
+              El mejor regalo es tu presencia en este día tan especial. Pero si
+              deseas obsequiar algo más, un sobre con tu cariño será recibido
+              con profunda gratitud.
             </p>
+            <button
+              onClick={() => setShowBankDetails(false)}
+              className="mt-8 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-8 rounded-full font-medium transition-all shadow-sm"
+            >
+              Cerrar
+            </button>
           </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">CLABE</p>
-            <p className="font-mono font-semibold">
-              {data.bankTransferDetails.clabe}
-            </p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">
-              Número de Tarjeta
-            </p>
-            <p className="font-mono font-semibold">
-              {data.bankTransferDetails.cardNumber}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <p className="text-gray-700 leading-relaxed text-lg italic">
-          El mejor regalo es tu presencia en este día tan especial.  
-          Pero si deseas obsequiar algo más,  
-          un sobre con tu cariño será recibido con profunda gratitud.
-        </p>
+        </motion.div>
       )}
-      <button
-        onClick={() => setShowBankDetails(false)}
-        className="mt-8 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-8 rounded-full font-medium transition-all shadow-sm"
-      >
-        Cerrar
-      </button>
-    </div>
-  </motion.div>
-)}
-
-*/}
-
-
 
       {/* Bank Details Modal 
       {showBankDetails && (
@@ -1998,22 +2067,27 @@ END:VCALENDAR
 
       */}
 
-
       {/* Footer clásico minimalista */}
       <motion.footer
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        viewport={{ once: true }}
-        className="text-center py-10 bg-white border-t border-gray-200"
-      >
-        <h2 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-wide">
-          ESSENCIAL PUEBLA
-        </h2>
-        <p className="text-gray-500 mt-2 text-sm md:text-base italic">
-          Invitaciones digitales personalizadas con estilo y elegancia.
-        </p>
-      </motion.footer>
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, ease: "easeOut" }}
+  viewport={{ once: true }}
+  className="text-center py-12 bg-white border-t border-gray-100"
+>
+  <img
+    src={`${import.meta.env.BASE_URL}media/icon/11. Icono Menu.png`}
+    alt="Logo ESSENCIAL PUEBLA"
+    className="w-12 h-12 mx-auto mb-4"
+  />
+  <h2 className="text-xl md:text-2xl font-light text-gray-900 tracking-widest uppercase">
+    ESSENCIAL PUEBLA
+  </h2>
+  <p className="text-gray-400 mt-1 text-sm md:text-base italic max-w-xs mx-auto">
+    Invitaciones digitales personalizadas con estilo y elegancia.
+  </p>
+</motion.footer>
+
 
       {/* Hidden YouTube Player */}
       {data.musicLink && (

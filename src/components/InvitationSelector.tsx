@@ -4,7 +4,10 @@ import { getAllInvitationIds, getInvitationData } from '../data/invitations';
 import { Calendar, User, ExternalLink } from 'lucide-react';
 
 export const InvitationSelector: React.FC = () => {
+  
+  {/* 
   const location = useLocation();
+  
 
   // 🔒 Si NO estás en una invitación válida y NO eres admin, bloquea el acceso
   const isInvitationRoute = /^\/invitation\/[a-zA-Z0-9-_]+$/.test(location.pathname);
@@ -33,9 +36,12 @@ export const InvitationSelector: React.FC = () => {
       </div>
     );
   }
+     */}
 
   // 🟢 Si la ruta es una invitación válida, renderiza normalmente
   const invitationIds = getAllInvitationIds();
+
+ 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50 py-16 px-4">
@@ -97,7 +103,7 @@ export const InvitationSelector: React.FC = () => {
 
                 <div className="space-y-3">
                   <Link
-                    to={`/invitation_project/invitation/${id}`}
+                    to={`/invitation/${id}`}
                     className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-cyan-600 transition-colors duration-300 flex items-center justify-center space-x-2"
                   >
                     <span>Ver Invitación</span>
@@ -106,7 +112,7 @@ export const InvitationSelector: React.FC = () => {
 
                   <button
                     onClick={() => {
-                      const url = `${window.location.origin}/invitation/${id}`;
+                      const url = `${window.location.origin}/invitation_project/invitation/${id}`;
                       navigator.clipboard.writeText(url);
                       alert('¡Link copiado al portapapeles!');
                     }}

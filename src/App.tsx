@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-
 import { InvitationTemplate } from './components/InvitationTemplate';
 import { InvitationSelector } from './components/InvitationSelector';
 import { getInvitationData } from './data/invitations';
-import ProtectedRoute from './components/ProtectedRoute';
 
 // Componente dinámico para cada invitación
 const InvitationPage: React.FC = () => {
@@ -16,13 +15,12 @@ const InvitationPage: React.FC = () => {
 
 function App() {
   return (
-    <Router>
-      
-        <Routes>
-          <Route path="/invitation_project/" element={<InvitationSelector />} />
-          <Route path="/invitation_project/invitation/:id" element={<InvitationPage />} />
-        </Routes>
-      
+    // 👇 Aquí está la clave: define el basename en el Router
+    <Router basename="/invitation_project">
+      <Routes>
+        <Route path="/" element={<InvitationSelector />} />
+        <Route path="/invitation/:id" element={<InvitationPage />} />
+      </Routes>
     </Router>
   );
 }

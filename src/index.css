@@ -43,6 +43,12 @@
   font-style: normal;
 }
 
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
 
 
 @keyframes gradient-x {
