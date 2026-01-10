@@ -7,8 +7,10 @@ import './index.css';
 const redirect = sessionStorage.redirect;
 if (redirect) {
   delete sessionStorage.redirect;
-  window.history.replaceState(null, '', '/invitation_project' + redirect);
+  const base = import.meta.env.BASE_URL || '';
+  window.history.replaceState(null, '', base + redirect);
 }
+
 
 
 createRoot(document.getElementById('root')!).render(
