@@ -1,210 +1,303 @@
 import React, { useEffect, useState } from "react";
-import { InvitationData, getCapabilities } from "../../data/invitations";
+import { InvitationData } from "../../data/invitations";
 import { motion } from "framer-motion";
 import {
-  MapPin,
-  Heart,
-  Crown,
   Church,
   PartyPopper,
   Clock,
-  Calendar,
-  Timer,
-  Zap,
-  Hash,
-  Shirt,
-  CheckCircle,
-  Sparkles,
-  Gift,
-  Store,
-  DollarSign,
-  Copy,
-  Instagram,
+  Crown,
+  Heart,
+  Camera,
   Music,
+  Sparkles,
+  Utensils
 } from "lucide-react";
+import confetti from "canvas-confetti";
+import { useInView } from "react-intersection-observer";
 
 type Props = { data: InvitationData };
 
 export const TimelineSection: React.FC<Props> = ({ data }) => {
-  const caps = getCapabilities(data);
-
   const [passedEvents, setPassedEvents] = useState<boolean[]>([]);
+  const [nightMode, setNightMode] = useState(false);
+  const [countdown, setCountdown] = useState("");
 
-  // Timeline passed events
+  /* -----------------------------
+     CUENTA REGRESIVA
+  ----------------------------- */
+
+  useEffect(() => {
+    if (!data.eventDate) return;
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const event = new Date(data.eventDate).getTime();
+
+      const diff = event - now;
+
+      if (diff <= 0) {
+        setCountdown("¡El evento ha comenzado!");
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    updateCountdown();
+
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [data.eventDate]);
+
+  /* -----------------------------
+     EVENTOS PASADOS
+  ----------------------------- */
+
   useEffect(() => {
     const checkPassed = () => {
       const now = new Date();
-      if (!data.timeline || data.timeline.length === 0) {
-        setPassedEvents([]);
-        return;
-      }
+
+      if (!data.timeline) return;
+
       const passed = data.timeline.map((item) => {
+        const eventDateTime = new Date(data.eventDate);
+
         const [hours, minutes] = item.time.split(":").map(Number);
-        const eventDateTime = new Date(now);
+
         eventDateTime.setHours(hours, minutes, 0, 0);
+
         return now >= eventDateTime;
       });
+
       setPassedEvents(passed);
     };
-    checkPassed();
-    const interval = setInterval(checkPassed, 10000); // Update every 10 seconds
-    return () => clearInterval(interval);
-  }, [data.timeline]);
 
-  // Get event icon
-  const getEventIcon = (event: string): React.ComponentType<any> => {
-    if (event.toLowerCase().includes("ceremonia")) return Church;
-    if (
-      event.toLowerCase().includes("fiesta") ||
-      event.toLowerCase().includes("recepción")
-    )
+    checkPassed();
+
+    const interval = setInterval(checkPassed, 10000);
+
+    return () => clearInterval(interval);
+  }, [data.timeline, data.eventDate]);
+
+  /* -----------------------------
+     CONFETTI + MODO NOCHE
+  ----------------------------- */
+
+  useEffect(() => {
+    if (!data.timeline) return;
+
+    const fiesta = data.timeline.find((item) =>
+      item.event.toLowerCase().includes("fiesta"),
+    );
+
+    if (!fiesta) return;
+
+    const [hours, minutes] = fiesta.time.split(":").map(Number);
+
+    const checkFiesta = () => {
+      const now = new Date();
+
+      const fiestaTime = new Date(data.eventDate);
+
+      fiestaTime.setHours(hours, minutes, 0, 0);
+
+      if (now >= fiestaTime) {
+        setNightMode(true);
+
+        confetti({
+          particleCount: 200,
+          spread: 120,
+          origin: { y: 0.6 },
+        });
+      }
+    };
+
+    const interval = setInterval(checkFiesta, 5000);
+
+    return () => clearInterval(interval);
+  }, [data]);
+
+  /* -----------------------------
+     ICONOS
+  ----------------------------- */
+
+  const getEventIcon = (event: string) => {
+    const name = event.toLowerCase();
+
+    if (name.includes("misa")) return Church;
+
+    if (name.includes("boda")) return Heart;
+
+    if (name.includes("fiesta") || name.includes("recepción"))
       return PartyPopper;
+
+    if (name.includes("vals")) return Crown;
+
+    if (name.includes("comida") || name.includes("cena") || name.includes("banquete")) return Utensils;
+
+    if (name.includes("brindis")) return Sparkles;
+
+    if (name.includes("foto")) return Camera;
+
+    if (name.includes("baile")) return Music;
+
+    if (name.includes("entrada")) return Heart;
+
     return Clock;
   };
+
+  /* -----------------------------
+     BACKGROUND
+  ----------------------------- */
 
   const bgImage = data.customization?.timelineImage
     ? data.customization.timelineImage.startsWith("http")
       ? `url("${data.customization.timelineImage}")`
-      : `url("${
-          import.meta.env.BASE_URL
-        }${data.customization.timelineImage.replace(/^\//, "")}")`
+      : `url("${import.meta.env.BASE_URL}${data.customization.timelineImage.replace(/^\//, "")}")`
     : undefined;
 
+  const progress =
+    data.timeline && data.timeline.length > 0
+      ? (passedEvents.filter(Boolean).length / data.timeline.length) * 100
+      : 0;
+
   return (
-    <div className="font-sans text-gray-800 ">
+    <div className="font-sans">
       <section
-        className="relative py-20 px-6 overflow-hidden"
+        className={`relative py-20 px-6 overflow-hidden transition-colors duration-1000 ${
+          nightMode ? "bg-black text-white" : "text-gray-800"
+        }`}
         style={{
           backgroundImage: bgImage,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
         }}
       >
-        {/* Fondo con glassmorphism y gradiente animado */}
-        
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
-        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-white/70 backdrop-blur-sm"></div>
 
+        {/* Cuenta regresiva */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="relative max-w-6xl mx-auto text-center z-10"
+          className="relative z-10 text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-rose-600 mb-6 montserrat-custom tracking-wide">
-            Itinerario del Evento
-          </h2>
-          {/* Separador animado */}
-          <motion.div
-            initial={{ width: 0 }}
-            whileInView={{ width: "6rem" }}
-            transition={{ duration: 1, delay: 0.3 }}
-            viewport={{ once: true }}
-            className="h-1 bg-gradient-to-r mx-auto rounded-full mb-12"
-          >
-            <div
-              className="w-20 h-1 mx-auto rounded-full mb-8"
-              style={{
-                background: `linear-gradient(to right, ${data.colors.primary}, ${data.colors.accent})`,
-              }}
-            ></div>
-          </motion.div>
-          <p className="text-gray-700 text-lg md:text-xl mb-16 max-w-3xl mx-auto leading-relaxed montserrat-custom">
-            Sigue el progreso del evento en tiempo real con esta elegante línea
-            del tiempo
-          </p>
+          <img
+              src="https://res.cloudinary.com/dwtkygvrh/image/upload/v1773290477/itinerario_vhujkx.png"
+              alt="Icono de vestimenta"
+              className="w-16 h-16 mx-auto mb-4 object-contain"
+            />
+          <h2 className="text-4xl font-bold mb-6">Itinerario del Evento</h2>
+
+          
         </motion.div>
 
-        <div className="relative max-w-5xl mx-auto z-10">
-          <div
-            className="relative"
-            aria-label="Cronograma del evento de quince años"
-          >
-            {/* Línea vertical con degradado dinámico */}
-            <div
-              className="absolute left-8 top-0 bottom-0 w-1 rounded-full shadow-lg"
-              style={{
-                background: `linear-gradient(to bottom, ${data.colors.primary}, ${data.colors.accent}, ${data.colors.secondary})`,
-              }}
-            ></div>
+        {/* TIMELINE */}
 
+        <div className="relative max-w-4xl mx-auto z-10">
+          {/* Línea base */}
+
+          <div className="absolute left-8 top-0 bottom-0 w-1 rounded-full bg-gray-200" />
+
+          {/* Línea progreso */}
+
+          <motion.div
+            className="absolute left-8 top-0 w-1 rounded-full"
+            style={{
+              background: `linear-gradient(to bottom, ${data.colors.primary}, ${data.colors.accent})`,
+            }}
+            initial={{ height: 0 }}
+            animate={{ height: `${progress}%` }}
+            transition={{ duration: 1 }}
+          />
+
+          <ul>
             {data.timeline?.map((item, index) => {
+              const { ref, inView } = useInView({
+                threshold: 0.4,
+                triggerOnce: true,
+              });
+
               const passed = passedEvents[index] || false;
+
               const isCurrent =
                 index === passedEvents.findIndex((p) => !p) - 1 ||
                 (passedEvents.every((p) => p) &&
-                  index === (data.timeline?.length ?? 0) - 1);
+                  index === data.timeline.length - 1);
 
               const IconComponent = getEventIcon(item.event);
 
               return (
                 <motion.li
                   key={index}
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.2,
-                    ease: "easeOut",
-                  }}
-                  viewport={{ once: true }}
-                  className="relative mb-12 ml-16"
-                  aria-current={isCurrent ? "step" : undefined}
+                  ref={ref}
+                  initial={{ opacity: 0, x: -80 }}
+                  animate={inView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.7 }}
+                  className="relative mb-14 ml-16"
                 >
-                  {/* Círculo con gradiente y microinteracciones */}
-                  <motion.div
-                    className="absolute -left-12 flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 shadow-lg ring-4 ring-white/50"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    aria-label={`Evento ${index + 1}: ${item.event}`}
-                  >
-                    <IconComponent className="w-4 h-4 text-white" />
-                  </motion.div>
+                  {/* Círculo */}
 
-                  {/* Carta del evento */}
                   <motion.div
-                    className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-rose-100/50 hover:shadow-2xl transition-all duration-300"
+                    className={`absolute -left-12 w-9 h-9 rounded-full shadow-lg ring-4 ring-white
+${isCurrent ? "bg-pink-500 animate-pulse" : "bg-rose-400"}
+`}
+                    animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
+                    transition={{
+                      repeat: isCurrent ? Infinity : 0,
+                      duration: 1.5,
+                    }}
+                  />
+
+                  {/* Card */}
+
+                  <motion.div
                     whileHover={{ y: -5 }}
+                    className={`backdrop-blur-md rounded-2xl p-6 shadow-xl border transition-all duration-300
+                    ${
+                      isCurrent
+                        ? "bg-rose-50 border-rose-400 scale-[1.02]"
+                        : "bg-white/90 border-rose-100"
+                    }`}
                   >
                     <div className="flex items-center justify-between mb-3">
-                      {/* Hora en carta pequeña */}
-                      <div className="bg-gradient-to-r from-rose-100 to-pink-100 px-4 py-2 rounded-full text-sm montserrat-custom text-rose-700 shadow-sm">
+                      <div className="bg-rose-100 px-4 py-2 rounded-full text-sm text-rose-700">
                         {item.time}
                       </div>
-                      {/* Indicador de estado */}
+
                       {passed && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center"
-                          aria-label="Evento completado"
-                        >
-                          <svg
-                            className="w-3 h-3 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </motion.div>
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          ✓
+                        </div>
                       )}
                     </div>
 
-                    {/* Título destacado */}
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 montserrat-custom tracking-wide">
-                      {item.event}
-                    </h3>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 rounded-full bg-rose-100 text-rose-600">
+                        {React.createElement(IconComponent, {
+                          className: "w-5 h-5",
+                        })}
+                      </div>
+
+                      <h3 className="text-xl font-bold">{item.event}</h3>
+                    </div>
+
+                    {isCurrent && (
+                      <span className="text-xs bg-rose-500 text-white px-3 py-1 rounded-full">
+                        En curso
+                      </span>
+                    )}
                   </motion.div>
                 </motion.li>
               );
             })}
-          </div>
+          </ul>
         </div>
       </section>
     </div>

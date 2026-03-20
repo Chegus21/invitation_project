@@ -39,23 +39,48 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
   if (all.length === 0) return null;
 
   const bgImage = data.customization?.godparentsBackgroundImages
-  ? data.customization.godparentsBackgroundImages.startsWith("http")
-    ? `url("${data.customization.godparentsBackgroundImages}")`
-    : `url("${import.meta.env.BASE_URL}${data.customization.godparentsBackgroundImages.replace(/^\//, "")}")`
-  : undefined;
+    ? data.customization.godparentsBackgroundImages.startsWith("http")
+      ? `url("${data.customization.godparentsBackgroundImages}")`
+      : `url("${import.meta.env.BASE_URL}${data.customization.godparentsBackgroundImages.replace(/^\//, "")}")`
+    : undefined;
 
-  
+  const parentsTitle = data.type === "boda" ? "Nuestros Padres" : "Mis Padres";
+  const parentsSubtitle =
+    data.type === "boda"
+      ? "Con el amor y el apoyo incondicional de quienes nos dieron la vida"
+      : "Con el amor y el apoyo incondicional de quienes me dieron la vida";
+
+  const godparentsTitle =
+    data.godparentsTitle ||
+    (data.type === "boda"
+      ? "Nuestros Padrinos"
+      : data.type === "cumple"
+        ? "Personas Especiales"
+        : "Mis Padrinos");
+
+  const godparentsSubtitle =
+    data.type === "boda"
+      ? "Personas especiales que nos acompañan en este momento tan importante de nuestras vidas"
+      : data.type === "cumple"
+        ? "Personas especiales que forman parte de este día tan importante"
+        : "Personas especiales que me acompañan en este momento tan importante de mi vida";
 
   return (
     <div className="font-sans text-gray-800 ">
-      <section className="py-16 px-4 bg-gradient-to-r from-rose-50/50 to-pink-50/50"
-      style={{
-  backgroundImage: bgImage,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-}}
->
+      <section
+        className="py-16 px-4 bg-gradient-to-r from-rose-50/50 to-pink-50/50"
+        style={{
+          backgroundImage: bgImage,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <img
+          src="https://res.cloudinary.com/dwtkygvrh/image/upload/v1773290490/padres_bomdqu.png"
+          alt="Icono de vestimenta"
+          className="w-16 h-16 mx-auto mb-4 object-contain"
+        />
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -64,7 +89,7 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
           className="max-w-4xl mx-auto text-center"
         >
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-black/80 mb-6 tracking-wide">
-            Mis Padres
+            {parentsTitle}
           </h2>
           <div
             className="w-20 h-1 mx-auto rounded-full mb-8"
@@ -81,29 +106,73 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
             className="bg-white/80 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/30 max-w-2xl mx-auto"
           >
             <div className="mb-6">
-              <Heart className="w-16 h-16 text-rose-600 mx-auto mb-4" />
               <p className="text-2xl md:text-3xl italianno-regular text-black/80 drop-shadow-lg mt-8r">
-                Con el amor y el apoyo incondicional de quienes nos dieron la
-                vida
+                {parentsSubtitle}
               </p>
             </div>
 
-            <div className="space-y-4">
-              {data.parentsNames &&
-                data.parentsNames.map((parent, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="bg-gradient-to-r from-rose-100 to-pink-100 rounded-2xl p-4 border border-rose-200/50"
-                  >
-                    <p className="text-rose-700 font-semibold montserrat-custom text-lg">
-                      {parent}
-                    </p>
-                  </motion.div>
-                ))}
+            <div className="space-y-8">
+              {/* Padres del Novia */}
+              {data.parentsNamesExtra && (
+                <div className="space-y-4">
+                  {data.parentsNamesExtra.map((parent, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="bg-gradient-to-r from-rose-100 to-pink-100 rounded-2xl p-4 border border-rose-200/50"
+                    >
+                      {parent.label && (
+                        <p className="text-rose-500 text-sm montserrat-custom mb-1 uppercase tracking-wide">
+                          {parent.label}
+                        </p>
+                      )}
+
+                      <p className="text-rose-700 font-semibold montserrat-custom text-lg flex items-center justify-center gap-2">
+                        {parent.name}
+                        {parent.deceased && (
+                          <span className="text-gray-500 text-lg">✝</span>
+                        )}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {/* Padres de la Novio */}
+              {data.parentsNames && (
+                <div className="space-y-4">
+                  {data.parentsNames && (
+                    <div className="space-y-4">
+                      {data.parentsNames.map((parent, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                          viewport={{ once: true }}
+                          className="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-4 border border-blue-200/50"
+                        >
+                          {parent.label && (
+                            <p className="text-blue-500 text-sm montserrat-custom mb-1 uppercase tracking-wide">
+                              {parent.label}
+                            </p>
+                          )}
+
+                          <p className="text-blue-700 font-semibold montserrat-custom text-lg flex items-center justify-center gap-2">
+                            {parent.deceased && (
+                              <span className="text-gray-400">✝</span>
+                            )}
+                            <span>{parent.name}</span>
+                          </p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         </motion.div>
@@ -112,12 +181,17 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
       <section
         className="py-20 px-6 bg-gradient-to-br from-pink-50/30 via-rose-50/20 to-white"
         style={{
-  backgroundImage: bgImage,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-}}
+          backgroundImage: bgImage,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
+        <img
+          src="https://res.cloudinary.com/dwtkygvrh/image/upload/v1773290495/padrinos_drzgyk.png"
+          alt="Icono de vestimenta"
+          className="w-16 h-16 mx-auto mb-4 object-contain"
+        />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -126,7 +200,7 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
           className="max-w-6xl mx-auto text-center"
         >
           <h2 className="text-4xl font-bold text-black-50 mb-4 font-serif">
-            Mis Padrinos
+            {godparentsTitle}
           </h2>
           <div
             className="w-20 h-1 mx-auto rounded-full mb-8"
@@ -135,8 +209,7 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
             }}
           ></div>
           <p className="text-gray-600 text-3xl md:text-4xl mb-16 mx-auto italianno-regular leading-relaxed text-center">
-            Personas especiales que nos acompañan en este momento tan importante
-            de nuestras vidas
+            {godparentsSubtitle}
           </p>
         </motion.div>
 
@@ -198,9 +271,7 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
                       initial={{ y: 5, opacity: 0 }}
                       whileInView={{ y: 0, opacity: 0.7 }}
                       transition={{ delay: index * 0.1 + 0.3 }}
-                    >
-                      Padrino/Madrina
-                    </motion.p>
+                    ></motion.p>
                   </div>
                 </div>
               </motion.div>
@@ -224,7 +295,6 @@ export const ParentsSection: React.FC<Props> = ({ data, title = "Padres" }) => {
           </motion.div>
         )}
       </section>
-      
     </div>
   );
 };

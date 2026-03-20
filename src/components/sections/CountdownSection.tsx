@@ -97,6 +97,11 @@ const caps = getCapabilities(data);
   backgroundRepeat: "no-repeat",
 }}
         >
+          <img
+              src="https://res.cloudinary.com/dwtkygvrh/image/upload/v1773290465/cuenta_regresiva_xw6cke.png"
+              alt="Icono de vestimenta"
+              className="w-16 h-16 mx-auto mb-4 object-contain"
+            />
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}

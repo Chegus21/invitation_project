@@ -186,6 +186,11 @@ END:VCALENDAR
         backgroundRepeat: "no-repeat",
       }}
     >
+      <img
+              src="https://res.cloudinary.com/dwtkygvrh/image/upload/v1773290453/calendario_qvwqgo.png"
+              alt="Icono de vestimenta"
+              className="w-16 h-16 mx-auto mb-4 object-contain"
+            />
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}

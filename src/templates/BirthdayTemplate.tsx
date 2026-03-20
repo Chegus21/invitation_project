@@ -17,6 +17,7 @@ import { Image1Section } from '../components/sections/Image1Section';
 import { Image2Section } from '../components/sections/Image2Section';
 import { Image3Section } from '../components/sections/Image3Section';
 import { HeroCover } from '../components/animations/HeroCover';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type Props = { data: InvitationData };
 
@@ -28,7 +29,8 @@ export const BirthdayTemplate: React.FC<Props> = ({ data }) => {
       : '';
 
   return (
-    <HeroCover>
+<HeroCover>
+        <ErrorBoundary>
           <HeaderHero data={data} />
           <ParentsSection data={data} title="Padres y Padrinos" />
           <CountdownSection data={data} />
@@ -44,6 +46,7 @@ export const BirthdayTemplate: React.FC<Props> = ({ data }) => {
           <RsvpSection data={data} />
           <MusicControl data={data} />
           <FooterSection />
+        </ErrorBoundary>
       </HeroCover>
   );
 };

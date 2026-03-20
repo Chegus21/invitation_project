@@ -57,6 +57,11 @@ const DressCodeSection: React.FC<Props> = ({ data }) => {
             viewport={{ once: true }}
             className="max-w-4xl mx-auto text-center"
           >
+            <img
+              src="https://res.cloudinary.com/dwtkygvrh/image/upload/v1773290461/codigo_de_vestimenta_lqems8.png"
+              alt="Icono de vestimenta"
+              className="w-16 h-16 mx-auto mb-4 object-contain"
+            />
             <h2 className="text-4xl font-serif montserrat-custom bg-clip-text bg-gradient-to-r text-black/80 mb-6 tracking-wide">
               Código de Vestimenta
             </h2>
@@ -75,12 +80,6 @@ const DressCodeSection: React.FC<Props> = ({ data }) => {
               className="bg-white/80 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-indigo-100/50 max-w-2xl mx-auto"
             >
               <div className="mb-6">
-                <Shirt
-                  aria-label="Icono de vestimenta"
-                  className="w-16 h-16 mx-auto mb-4"
-                  style={{ color: data.colors.primary }}
-                />
-
                 <h3
                   className="text-2xl montserrat-custom mb-4"
                   style={{ color: data.colors.primary }}

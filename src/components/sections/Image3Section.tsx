@@ -18,6 +18,11 @@ export const Image3Section: React.FC<SectionProps> = ({ data }) => {
         )}")`
     : undefined;
 
+    // 👇 IMPORTANTE: si no hay imagen, no renderiza nada
+  if (!data.customization?.image3?.trim()) {
+    return null;
+  }
+
   return (
     <div className="font-sans text-gray-800 ">
       {/* Sección personalizada 3 */}

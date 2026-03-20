@@ -17,7 +17,7 @@ export const GallerySection: React.FC<Props> = ({ data }) => {
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [data.customization?.galleryImages]);
